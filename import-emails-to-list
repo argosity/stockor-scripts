@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+require_relative 'lib/ledger_buddy'
+require 'mail'
+require 'main'
+
+
+
+# Decodes a CSV file from STDIN
+# Addresses are in the format of:
+# <id>,<last_name>,<middle_name (maybe missing)>,<first_name>,<email (maybe missing or invalid)>
+
+def each_address
+    STDIN.each_line do | line |
+        begin
+            atoms = line.chomp.split(',')
+            ma = Mail::Address.new( atoms.last )
+            if ( ! ma.local.blank? && ! ma.domain.blank? )
+                name = atoms[ 1 ... atoms.length-1 ].map(&:capitalize)
+                ( name[0], name[1] ) = [ name.last, name.first ]
+                data = { :name => name.join(' '), :email => atoms.last.downcase }
+                yield data
+            end
+        rescue Mail::Field::ParseError, ArgumentError=>e
+            p e.class
+            STDERR.puts "EXCEPTION: #{e}"
+            STDERR.puts line
+            next
+        end
+    end
+end
+
+
+OPTIONS = %w{ address username password subdomain address }
+source = params['source_code'].value
+
+lb = LedgerBuddy.from_command_line( {
+        :server=>'demo.ledgerbuddy.dev'
+    })
+
+count = 0
+each_address do | addr |
+    addr['source'] = source
+    la = lb.create( :list_addresses, addr ).data
+    puts '%4i %s' % [ count, la.email ] if 0 == ( (count+=1) % 100 )
+end

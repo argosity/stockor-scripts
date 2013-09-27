@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require 'i18n'
+require 'rubygems'
+require 'bundler'
+Bundler.setup(:default)
+
+require_relative 'lib/demo_data'
+
+lb = LedgerBuddy.from_command_line( {
+        :server=>'demo.ledgerbuddy.dev'
+    })
+
+DemoData.run( lb )
