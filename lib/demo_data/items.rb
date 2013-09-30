@@ -7,7 +7,7 @@ module DemoData
         IMAGES = Dir.glob("/Users/nas/Pictures/monet/*jpg")
 
         def initialize( count )
-            @data = fetch( self.api_path_name, :include=>['xrefs'])
+            super()
             ensure_record_count( count ) do
                 begin
                     title = FS.product_name
@@ -16,10 +16,20 @@ module DemoData
             end
         end
 
+        def record_options
+            { :include=>['xrefs'] }
+        end
+
         def create( title )
-            xrefs = DemoData.skus.data.sample( rand(3)+1 ).map do | sku |
-                { sku_id: sku.id, options: { color: FS.color, size: FS.size } }
+            colors = 0.upto(rand(4)).map{ FS.color }
+            sizes  = 0.upto(rand(4)).map{ FS.size }
+            xrefs  = []
+            colors.each do | color |
+                sizes.each do | size |
+                    xrefs << { sku_id: DemoData.skus.data.sample.id, options: { color: color, size: size } } unless 0 == rand(5)
+                end
             end
+            return if xrefs.empty?
             item = super({
                     :title => title,
                     :tags  => DemoData.item_categories.active_tags.sample( rand(3)+1 ),
@@ -28,7 +38,7 @@ module DemoData
                     :summary => FC.bs + '; ' + FC.catch_phrase,
                     :xrefs_attributes => xrefs,
                     :options=>{:size=>'',:color=>''}
-                }, {:include=>['xrefs']} )
+                })
 
             IMAGES.sample( rand(5)+1 ).map do | image |
                 File.open( image ) do | io |
