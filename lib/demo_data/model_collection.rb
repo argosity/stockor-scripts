@@ -6,20 +6,33 @@ module DemoData
 
         class_attribute :api_path_name
 
+        def initialize( options=self.record_options )
+            @data = fetch( self.api_path_name, options )
+        end
+
         def self.api_path( value )
             self.api_path_name = value
         end
 
-        def initialize
-            @data = fetch
+        def record_options
+            {}
+        end
+
+        def count
+            @data.count
         end
 
         def data
             @data||=[]
         end
 
+        def each( &block )
+            @data.each( &block )
+        end
+
         def ensure_record_count( count )
-            self.data.count.upto( count - 1 ) do | x |
+            ( self.data.count + 1 ).upto( count ) do | x |
+                DemoData.log( "%-30s%03i / %03i", self.class, x, count )  if 0 == ( x % 10 )
                 yield x
             end
         end
@@ -45,12 +58,22 @@ module DemoData
 
         def fetch( name=self.api_path_name, options={} )
             query = DemoData.lb.get( name )
-            query.include( options[:include] ) if options.has_key?(:include)
-            parse( query.results )
+            query.arguments( options.merge( :limit=>250 ) )
+            data = parse( query.results )
+            fetched = data.count
+            DemoData.log( "%-30s%03d", name, data.count )
+            while fetched == 250
+                query.arguments({:start=>data.count})
+                recs = parse( query.results )
+                fetched = recs.count
+                data += recs
+                DemoData.log("%-30s%03d", name, data.count )
+            end
+            data
         end
 
-        def create( attributes, params={} )
-            rec = parse( DemoData.lb.create( self.api_path_name, attributes, params ), attributes )
+        def create( attributes, options=self.record_options )
+            rec = parse( DemoData.lb.create( self.api_path_name, attributes, options ), attributes )
             self.data.push( rec )
             rec
         end
