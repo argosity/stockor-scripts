@@ -5,15 +5,18 @@ module DemoData
         api_path 'sales_orders'
 
         def initialize( count )
-            @data = fetch( self.api_path_name, :include=>['lines'])
-
+            super()
             ensure_record_count( count ) do
                 self.create
             end
 
             fetch( self.api_path_name, :scope=>{:pickable=>true},:include=>["lines"]).each do | so |
-                pick(so) unless ( 0 == rand(4) )
+                pick(so) unless ( 0 == rand(5) )
             end
+        end
+
+        def record_options
+            { :include=>['lines'] }
         end
 
         def create
@@ -27,12 +30,12 @@ module DemoData
             end
             return if lines.empty?
 
-            so = super({
+            super({
                     customer_id: DemoData.customers.random_id,
                     po_num: FS.product_number,
                     location_id: location_id,
                     lines_attributes: lines
-                }, :include=>['lines'] )
+                })
 
         end
 
@@ -42,7 +45,7 @@ module DemoData
                     .include('lines')
                     .results
                 ).first
-            unless ( 0 == rand(4) )
+            unless ( 0 == rand(10) )
                 invoice( pt )
             end
         end

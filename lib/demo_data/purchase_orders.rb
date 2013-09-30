@@ -4,31 +4,31 @@ module DemoData
 
         api_path :purchase_orders
 
-        def initialize( count )
-            @data = fetch( self.api_path_name, :include=>['lines'])
-
-            ensure_record_count( count ) do
-                self.create
+        def initialize
+            super()
+            return if data.count != 0
+            DemoData.vendors.each do | vendor |
+                DemoData.locations.data.sample( rand( DemoData.locations.count ) + 1 ).each do | location |
+                    self.create( vendor, location )
+                end
             end
-
         end
 
-        def create
-            location_id = DemoData.locations.random_id
-            vendor_id   = DemoData.skus.active_vendor_ids.sample
-            lines = []
+        def record_options
+            { :include=>['lines'] }
+        end
 
-            count = rand(14)+1
-            DemoData.skus.for_vendor_and_location( vendor_id, location_id ) do | sku, sv, sl |
+        def create( vendor, location )
+            lines = []
+            DemoData.skus.for_vendor_and_location( vendor.id, location.id ) do | sku, sv, sl |
                 lines.push( { sku_loc_id: sl.id, qty: rand(20)+1 } ) unless sku.is_other_charge
-                break if 0 == count-=1
             end
             return if lines.empty?
             po = super({
-                    vendor_id: vendor_id,
-                    location_id: location_id,
+                    vendor_id: vendor.id,
+                    location_id: location.id,
                     lines_attributes: lines
-                },{:include=>['lines']})
+                })
 
             unless ( 0 == rand(5) )
                 receive(po)
@@ -48,7 +48,7 @@ module DemoData
                         }
                 } ) )
 
-            if ( 0 == rand(2) )
+            if ( 0 == rand(5) )
                 DemoData.lb.update( 'vouchers', vouch.id, { state_event: 'mark_confirmed' } )
             end
 

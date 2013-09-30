@@ -8,9 +8,8 @@ module DemoData
         api_path :skus
 
         def initialize( count )
-            @data = fetch( self.api_path_name, :include=>['locations','sku_vendors'])
+            super()
             @gaa_id = DemoData.gl.find{|gl| gl.number=='5100' }.id
-
             ensure_record_count( count ) do | x |
                 digits = ( '%04i' % x )
                 desc = FS.product_name
@@ -32,16 +31,20 @@ module DemoData
             end
         end
 
+        def record_options
+            { :include=>['locations','sku_vendors'] }
+        end
+
         def active_vendor_ids
             @active_vendors ||= self.data.map{|sku| sku.sku_vendors.map(&:vendor_id) }.flatten.uniq
         end
 
         def skuloc_with_location_and_id( location_id, sku_id )
             sku = @data.find{ |s| sku_id == s.id }
-            return nil unless sku
-            return sku.locations.find{|l| l.location_id == location_id } || DemoData.lb.create( 'sku_locs', {
-                    sku_id: sku_id, location_id: location_id
-                }).first
+            raise "Looking for Sku ID #{sku_id} but server didn't return it" unless sku
+            return sku.locations.find{|l| l.location_id == location_id } ||
+                DemoData.lb.get( 'sku_locs' ).query( sku_id: sku_id, location_id: location_id ).first ||
+                parse( DemoData.lb.create( 'sku_locs', { sku_id: sku_id, location_id: location_id }) )
         end
 
         def for_location( location_id )
@@ -73,7 +76,7 @@ module DemoData
                         }],
                     sku_vendors_attributes: vendors,
                     locations_attributes: locations
-            },{:include=>['locations','sku_vendors']})
+            })
         end
     end
 
