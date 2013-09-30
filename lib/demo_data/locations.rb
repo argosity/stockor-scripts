@@ -12,6 +12,12 @@ module DemoData
                 end while find{| loc | loc.code == code }
                 self.create( code )
             end
+            self.each do | location |
+                File.open( File.join(File.dirname(__FILE__), "demo-logo.png") ) do | io |
+                    DemoData.lb.upload( "locations/#{location.id}/images", :image=> io )
+                end
+            end
+
         end
 
         def create( code )
