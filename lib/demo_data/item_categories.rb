@@ -23,7 +23,7 @@ module DemoData
         def create( name )
             super( {
                     :name => name,
-                    :description  => FC.bs.titleize,
+                    :description  => FC.bs.titleize, active: true,
                     :include_tags => TAGS.sample( rand(8)+1 ),
                     :exclude_tags => TAGS.sample( rand(3)+1 ),
                 })
