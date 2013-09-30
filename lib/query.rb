@@ -8,17 +8,17 @@ class Query
   end
 
   def arguments( params )
-      @params = @params.merge( params )
+      @params.merge!( params )
       self
   end
 
-  def filter( params )
-      @params[:filter ] = params
+  def query( params )
+      @params[:query ] = params
       self
   end
 
   def include( assoc )
-      @include += [ *assoc ]
+      @params[:include] = [ *assoc  ]
       self
   end
 
@@ -27,9 +27,12 @@ class Query
       self
   end
 
+  def first
+      data.first
+  end
+
   def results( &block )
-      params = @params.merge({ :include=>@include } )
-      @lb.execute( :get, @path, :params=>params, &block )
+      @lb.execute( :get, @path, :params=>@params, &block )
   end
 
   def data( &block )
