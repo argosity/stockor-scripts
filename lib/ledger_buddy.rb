@@ -75,6 +75,8 @@ class LedgerBuddy
             opt :client_id, "OAuth2 client_id", :type=>:string, :default=>opts[:client_id], :requied => ! opts.has_key?(:client_id)
             opt :client_secret, "OAuth2 client secret key", :type=>:string, :default=>opts[:client_secret], :requied=> ! opts.has_key?(:client_secret)
             opt :token, "OAuth2 access token"
+            opt :username, "username for login/pw authentication", :type=>:string
+            opt :password, "password to use",   :type=>:string
         end
         opts.merge!(cmdline_opts)
 
@@ -82,7 +84,8 @@ class LedgerBuddy
         server = "http://#{server}/" unless server=~/^http/
 
         client = OAuth2::Client.new( opts[:client_id], opts[:client_secret], :site => server )
-        if opts[:username] && opts[:password]
+
+        if opts[:username].present? && opts[:password].present?
             verfier = client.password.get_token( opts[:username], opts[:password] )
             token = OAuth2::AccessToken.new( client, verfier.token ).token
         elsif ! settings['token']
