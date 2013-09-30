@@ -50,15 +50,19 @@ class LedgerBuddy
     end
 
     def execute( method, path, opts, &block )
-        resp = @http.request(
-            method,
-            self.url_for(path),
-            opts
-            )
-        if resp.status == 200
-            Hashie::Mash.new Oj.load resp.body
-        else
-            raise resp.status_line
+        begin
+            resp = @http.request(
+                method,
+                self.url_for(path),
+                opts
+                )
+            if resp.status == 200
+                Hashie::Mash.new Oj.load resp.body
+            else
+                raise resp.status_line
+            end
+        rescue OAuth2::Error=>e
+            raise "#{e.response.status} error: #{e.response.body}"
         end
     end
 
