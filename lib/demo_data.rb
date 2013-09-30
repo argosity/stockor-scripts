@@ -33,7 +33,12 @@ module DemoData
     mattr_accessor :lb, :gl, :terms, :payment_processor, :shipping_setting, :locations, :vendors, :skus
     mattr_accessor :item_categories, :items, :purchase_orders, :customers, :sales_orders, :adjustment
 
+    def self.log( str, *args )
+        STDOUT.puts str % args
+    end
+
     def self.run( lb )
+        Kernel.srand()
         self.lb = lb
         self.gl                = GLAccounts.new
         self.terms             = Terms.new
@@ -41,12 +46,12 @@ module DemoData
         self.shipping_setting  = ShippingSetting.new
         self.locations         = Locations.new( 3 )
         self.vendors           = Vendors.new( 120 )
-        self.skus              = Skus.new( 350 )
+        self.skus              = Skus.new( 250 )
         self.customers         = Customers.new( 220 )
-        self.purchase_orders   = PurchaseOrders.new( 80 )
-        self.sales_orders      = SalesOrders.new( 480 )
+        self.purchase_orders   = PurchaseOrders.new
+        self.sales_orders      = SalesOrders.new( 200 )
         self.item_categories   = ItemCategories.new( 6 )
-        self.items             = Items.new( 120 )
+        self.items             = Items.new( 90 )
         self.adjustment        = InventoryAdjustments.new
     end
 
