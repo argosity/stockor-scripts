@@ -33,6 +33,7 @@ module DemoData
             super({
                     customer_id: DemoData.customers.random_id,
                     po_num: FS.product_number,
+                    ship_partial: ( 0 == rand(1) ),
                     location_id: location_id,
                     lines_attributes: lines
                 })
@@ -45,7 +46,7 @@ module DemoData
                     .include('lines')
                     .results
                 ).first
-            unless ( 0 == rand(10) )
+            unless ( 0 == rand(5) )
                 invoice( pt )
             end
         end
