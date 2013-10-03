@@ -46,7 +46,7 @@ module DemoData
         self.shipping_setting  = ShippingSetting.new
         self.locations         = Locations.new( 3 )
         self.vendors           = Vendors.new( 120 )
-        self.skus              = Skus.new( 250 )
+        self.skus              = Skus.new( 350 )
         self.customers         = Customers.new( 220 )
         self.purchase_orders   = PurchaseOrders.new
         self.sales_orders      = SalesOrders.new( 200 )
