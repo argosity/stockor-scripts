@@ -20,7 +20,7 @@ module DemoData
                     { vendor_id: vendor.id, code: FS.product_number, list_price: cost*1.45,
                       uom_size: uom.number, uom_code: uom.code, cost: cost }
                 end
-                locations = DemoData.locations.data.sample( rand(3)+1 ).map do | loc |
+                locations = DemoData.locations.data.sample( rand(DemoData.locations.count)+2 ).map do | loc |
                     { location_id: loc.id, bin: BINS.sample }
                 end
                 0.upto( rand(10) ) do
