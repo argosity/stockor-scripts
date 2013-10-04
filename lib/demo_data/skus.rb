@@ -71,7 +71,7 @@ module DemoData
                     gl_asset_account_id: @gaa_id, default_uom_code: 'EA', bin: BINS.sample,
                     does_track_inventory: true, is_other_charge: false, is_discontinued: false,
                     uoms_attributes: [{
-                            base_price: price, code:'EA', size: 1, weight: (rand(1000).to_f/10)+0.2,
+                            base_price: price, code:'EA', size: 1, weight: (rand(750).to_f/10)+0.2,
                             width: (rand(50).to_f/10)+0.2, height: (rand(60).to_f/10)+0.2, depth: (rand(80).to_f/10)+0.2
                         }],
                     sku_vendors_attributes: vendors,
