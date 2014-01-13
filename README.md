@@ -1,7 +1,7 @@
-lb-scripts
+Stockor scripts
 ==========
 
-This is a collection of scripts that peform various actions against the LegerBuddy API
+This is a collection of scripts that peform various actions against the Stockor API
 
 Currently there are scripts that are used to load the demo data onto the demo website.
 

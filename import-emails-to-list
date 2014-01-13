@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'lib/ledger_buddy'
+require_relative 'lib/stockor'
 require 'mail'
 require 'main'
 
@@ -34,7 +34,7 @@ end
 OPTIONS = %w{ address username password subdomain address }
 source = params['source_code'].value
 
-lb = LedgerBuddy.from_command_line( {
+lb = Stockor.from_command_line( {
         :server=>'demo.ledgerbuddy.dev'
     })
 

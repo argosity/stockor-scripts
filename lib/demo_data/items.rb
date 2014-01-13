@@ -26,7 +26,11 @@ module DemoData
             xrefs  = []
             colors.each do | color |
                 sizes.each do | size |
-                    xrefs << { sku_id: DemoData.skus.data.sample.id, options: { color: color, size: size } } unless 0 == rand(5)
+                    sid = DemoData.skus.data.sample.id
+                    while xrefs.detect{ |xr| xr[:sku_id]==sid }
+                        sid = DemoData.skus.data.sample.id
+                    end
+                    xrefs << { sku_id: sid , options: { color: color, size: size } }
                 end
             end
             return if xrefs.empty?

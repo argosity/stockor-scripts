@@ -12,7 +12,7 @@ require_relative 'demo_data/items'
 require_relative 'demo_data/purchase_orders'
 require_relative 'demo_data/inventory_adjustments'
 require_relative 'demo_data/sales_orders'
-require_relative 'ledger_buddy'
+require_relative 'stockor'
 require 'active_support/core_ext/module/attribute_accessors'
 require 'faker'
 

@@ -10,7 +10,7 @@ require 'highline'
 require 'httmultiparty'
 require_relative 'query'
 
-class LedgerBuddy
+class Stockor
 
     attr_reader :http
 
@@ -100,7 +100,7 @@ class LedgerBuddy
             settings['token'] = token.to_s
             file.write settings.to_yaml
         end
-        LedgerBuddy.new( OAuth2::AccessToken.new( client, token ), settings )
+        Stockor.new( OAuth2::AccessToken.new( client, token ), settings )
     end
 
 
