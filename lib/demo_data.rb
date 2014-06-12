@@ -40,7 +40,7 @@ module DemoData
 
     def self.run
         Kernel.srand()
-        Skr::Core::DB.connect({ adapter: 'postgresql',  database: 'skr_dev' })
+        Skr::Core::DB.connect({ adapter: 'postgresql',  database: ARGV.first })
         Skr::Core::DB.seed!
 
         self.terms             = Terms.new
