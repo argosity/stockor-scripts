@@ -7,8 +7,4 @@ Bundler.setup(:default)
 
 require_relative 'lib/demo_data'
 
-lb = Stockor.from_command_line( {
-        :server=>'demo.ledgerbuddy.dev'
-    })
-
-DemoData.run( lb )
+DemoData.run

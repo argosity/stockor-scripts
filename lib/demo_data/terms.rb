@@ -1,7 +1,12 @@
 module DemoData
 
     class Terms < ModelCollection
-        api_path :terms
+
+        set_model Skr::PaymentTerm
+
+        def initialize
+        end
+
     end
 
 end

@@ -14,7 +14,7 @@ module DemoData
             end
             self.each do | location |
                 File.open( File.join(File.dirname(__FILE__), "demo-logo.png") ) do | io |
-                    DemoData.lb.upload( "locations/#{location.id}/images", :image=> io )
+                    DemoData.skr.upload( "locations/#{location.id}/images", :image=> io )
                 end
             end
 

@@ -43,8 +43,8 @@ module DemoData
             sku = @data.find{ |s| sku_id == s.id }
             raise "Looking for Sku ID #{sku_id} but server didn't return it" unless sku
             return sku.locations.find{|l| l.location_id == location_id } ||
-                DemoData.lb.get( 'sku_locs' ).query( sku_id: sku_id, location_id: location_id ).first ||
-                parse( DemoData.lb.create( 'sku_locs', { sku_id: sku_id, location_id: location_id }) )
+                DemoData.skr.get( 'sku_locs' ).query( sku_id: sku_id, location_id: location_id ).first ||
+                parse( DemoData.skr.create( 'sku_locs', { sku_id: sku_id, location_id: location_id }) )
         end
 
         def for_location( location_id )

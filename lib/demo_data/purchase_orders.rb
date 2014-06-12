@@ -40,7 +40,7 @@ module DemoData
         end
 
         def receive(po)
-            vouch = parse( DemoData.lb.create( 'vouchers', {
+            vouch = parse( DemoData.skr.create( 'vouchers', {
                         purchase_order_id: po.id,
                         refno: FS.product_number,
                         lines_attributes: po.lines.map{ | pol |
@@ -49,7 +49,7 @@ module DemoData
                 } ) )
 
             if ( 0 == rand(5) )
-                DemoData.lb.update( 'vouchers', vouch.id, { state_event: 'mark_confirmed' } )
+                DemoData.skr.update( 'vouchers', vouch.id, { state_event: 'mark_confirmed' } )
             end
 
         end

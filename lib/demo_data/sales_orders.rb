@@ -41,7 +41,7 @@ module DemoData
         end
 
         def pick( so )
-            pt = parse( DemoData.lb.get( 'pick_tickets/from_orders' )
+            pt = parse( DemoData.skr.get( 'pick_tickets/from_orders' )
                     .arguments( :order_ids=>[so.id] )
                     .include('lines')
                     .results
@@ -52,7 +52,7 @@ module DemoData
         end
 
         def invoice( pt )
-            parse( DemoData.lb.create( 'invoices', {
+            parse( DemoData.skr.create( 'invoices', {
                         pick_ticket_id: pt.id,
                         amount_paid: ( 0 == rand(2) ) ? pt.lines.inject(0){|sum,ptl| sum+(ptl.price.to_f * ptl.qty.to_i) } : 0.0,
                         lines_attributes: pt.lines.map{ | ptl |

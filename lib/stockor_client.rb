@@ -10,7 +10,7 @@ require 'highline'
 require 'httmultiparty'
 require_relative 'query'
 
-class Stockor
+class StockorClient
 
     attr_reader :http
 
@@ -66,7 +66,6 @@ class Stockor
         end
     end
 
-
     def self.from_command_line( opts={} )
         settings = File.exists?(".settings.yml") ? YAML.load( File.open(".settings.yml") ) : {}
         opts.merge!( settings.symbolize_keys )
@@ -79,29 +78,26 @@ class Stockor
             opt :password, "password to use",   :type=>:string
         end
         opts.merge!(cmdline_opts)
-
         server = opts[:server]
         server = "http://#{server}/" unless server=~/^http/
-
+        token = ''
         client = OAuth2::Client.new( opts[:client_id], opts[:client_secret], :site => server )
 
-        if opts[:username].present? && opts[:password].present?
-            verfier = client.password.get_token( opts[:username], opts[:password] )
-            token = OAuth2::AccessToken.new( client, verfier.token ).token
-        elsif ! settings['token']
+        if settings['token'].blank?
             redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
             url = client.auth_code.authorize_url(:redirect_uri => redirect_uri )
             `open "#{url}"`
             hl = HighLine.new
             token = hl.ask("Enter token from website:  ") { |q| q.echo = "x" }
             token = client.auth_code.get_token( token.to_s, { :redirect_uri => redirect_uri }).token
+            File.open(".settings.yml", "w") do |file|
+                settings['token'] = token.to_s
+                file.write settings.to_yaml
+            end
+        else
+            token = settings['token']
         end
-        File.open(".settings.yml", "w") do |file|
-            settings['token'] = token.to_s
-            file.write settings.to_yaml
-        end
-        Stockor.new( OAuth2::AccessToken.new( client, token ), settings )
+        StockorClient.new( OAuth2::AccessToken.new( client, token ), settings )
     end
-
 
 end

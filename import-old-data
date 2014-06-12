@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require 'i18n'
+require 'rubygems'
+require 'bundler'
+
+Bundler.setup(:default)
+
+require_relative 'lib/import'
+
+skr = StockorClient.from_command_line( {
+        :server=>'tml.stockor.dev'
+    })
+
+Import.run(skr)

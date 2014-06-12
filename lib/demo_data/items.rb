@@ -45,8 +45,8 @@ module DemoData
                 })
 
             IMAGES.sample( rand(5)+1 ).map do | image |
-                File.open( image ) do | io |
-                    DemoData.lb.upload( "items/#{item.id}/images", :image=> io )
+                 File.open( image ) do | io |
+                    DemoData.skr.upload( "items/#{item.id}/images", :image=> io )
                 end
             end
         end
