@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/argosity/stockor-core.git
-  revision: 19f089b5cb05807caa023021a43f014e049be96f
+  revision: 5e285749ccb5ea0b386dc16954fab4568f92df05
   branch: master
   specs:
     stockor-core (0.2)

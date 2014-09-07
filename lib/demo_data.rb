@@ -45,6 +45,7 @@ module DemoData
 
         self.terms             = Terms.new
         self.customers         = Customers.new( 220 )
+        self.vendors           = Vendors.new( 120 )
 
         # self.payment_processor = PaymentProcessor.new
         # self.shipping_setting  = ShippingSetting.new
