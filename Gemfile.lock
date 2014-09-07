@@ -1,4 +1,24 @@
 GIT
+  remote: git://github.com/argosity/stockor-access.git
+  revision: 102d14bfa880fd26d6dbac57c29548ba58e40320
+  branch: master
+  specs:
+    stockor-access (0.0.1)
+      bcrypt-ruby (~> 3.1.5)
+      stockor-api (= 0.2)
+      stockor-core (= 0.2)
+
+GIT
+  remote: git://github.com/argosity/stockor-api.git
+  revision: 0fb40babad2cf67479101aaa145b7d200aaf29c0
+  branch: master
+  specs:
+    stockor-api (0.2)
+      grape (~> 0.7.0)
+      grape-entity (~> 0.4.2)
+      stockor-core (= 0.2)
+
+GIT
   remote: git://github.com/argosity/stockor-core.git
   revision: 5e285749ccb5ea0b386dc16954fab4568f92df05
   branch: master
@@ -33,20 +53,69 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    addressable (2.3.6)
     arel (5.0.1.20140414130214)
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
+    bcrypt (3.1.7)
+    bcrypt-ruby (3.1.5)
+      bcrypt (>= 3.1.3)
     builder (3.2.2)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
+    cookiejar (0.3.2)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
+    em-http-request (1.1.2)
+      addressable (>= 2.3.4)
+      cookiejar
+      em-socksify (>= 0.3)
+      eventmachine (>= 1.0.3)
+      http_parser.rb (>= 0.6.0)
+    em-socksify (0.3.0)
+      eventmachine (>= 1.0.0.beta.4)
+    equalizer (0.0.9)
+    eventmachine (1.0.3)
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
+    faye (1.0.3)
+      cookiejar (>= 0.3.0)
+      em-http-request (>= 0.3.0)
+      eventmachine (>= 0.12.0)
+      faye-websocket (>= 0.7.0)
+      multi_json (>= 1.0.0)
+      rack (>= 1.0.0)
+      websocket-driver (>= 0.3.0)
+    faye-websocket (0.7.4)
+      eventmachine (>= 0.12.0)
+      websocket-driver (>= 0.3.1)
+    grape (0.7.0)
+      activesupport
+      builder
+      hashie (>= 1.2.0)
+      multi_json (>= 1.3.2)
+      multi_xml (>= 0.5.2)
+      rack (>= 1.3.0)
+      rack-accept
+      rack-mount
+      virtus (>= 1.0.0)
+    grape-entity (0.4.4)
+      activesupport
+      multi_json (>= 1.3.2)
     hashie (3.0.0)
     highline (1.6.21)
     httmultiparty (0.3.14)
       httparty (>= 0.7.3)
       mimemagic
       multipart-post
+    http_parser.rb (0.6.0)
     httparty (0.13.1)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     i18n (0.6.9)
+    ice_nine (0.11.0)
     json (1.8.1)
     jwt (1.0.0)
     mail (2.6.1)
@@ -66,6 +135,10 @@ GEM
     oj (2.9.5)
     pg (0.17.1)
     rack (1.5.2)
+    rack-accept (0.4.5)
+      rack (>= 0.4)
+    rack-mount (0.8.3)
+      rack (>= 1.0.0)
     require_all (1.3.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -73,12 +146,19 @@ GEM
     trollop (2.0)
     tzinfo (1.2.1)
       thread_safe (~> 0.1)
+    virtus (1.0.3)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
+    websocket-driver (0.3.4)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   faker!
+  faye
   hashie
   highline
   httmultiparty
@@ -86,5 +166,7 @@ DEPENDENCIES
   oauth2
   oj
   rest-client
+  stockor-access!
+  stockor-api!
   stockor-core!
   trollop

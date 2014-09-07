@@ -1,0 +1,63 @@
+#!/usr/bin/env ruby
+
+require 'faye'
+require 'skr/core'
+require 'skr/api'
+require 'skr/access'
+require 'bundler'
+require 'eventmachine'
+
+SECRETS=YAML.load(File.read("secrets.yml"))
+
+Bundler.setup(:default)
+
+Skr::Core::DB.connect(SECRETS['db'])
+
+class ServerAuth
+    def outgoing(message,callback)
+        message['ext'] = { 'server_token'=>SECRETS['pubsub']['key'] }
+        callback.call(message)
+    end
+end
+EM.run do
+    client = Faye::Client.new(SECRETS['pubsub']['endpoint'])
+    client.add_extension(ServerAuth.new)
+
+    client.connect do
+        puts "Connected"
+        Skr::Model.observe(:save) do |model|
+            if model.changes.any?
+                path = "/#{model.class.api_path}/#{model.id}"
+                user_info = if model.has_attribute?(:updated_by_id)
+                                model.updated_by.as_json(only:[:id,:name,:email])
+                            else
+                                {}
+                            end
+                puts "sending: #{model.changes}"
+                publication = client.publish(path, {
+                                                 by: user_info,
+                                                 update: model.changes
+                                             })
+
+                publication.errback do |error|
+                    puts 'There was a problem sending message: ' + error.message
+                end
+            end
+        end
+    end
+
+    c=Skr::Customer.order(:code).first
+    ids = [c.billing_address_id, c.shipping_address_id]
+
+    EM.add_periodic_timer(10) do
+        sample = Skr::Address.find((rand*450).to_i+1)
+        keys = sample.attributes.keys.reject{ |attr| attr=~/id/ || attr=~/_at/ }
+        key = keys.sample
+        update = {}
+        update[key] = sample[key]
+
+        Skr::Address.find(ids.sample).update_attributes!(update)
+    end
+
+
+end
