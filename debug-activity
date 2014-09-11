@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+require 'skr/core'
+require 'skr/api'
+require 'skr/access'
+require 'skr/workspace/pub_sub'
+require 'bundler'
+
+SECRETS=YAML.load(File.read("secrets.yml"))
+
+Skr::Workspace.configure do | conf |
+    conf.pubsub_host = SECRETS['pubsub']['endpoint']
+    conf.pubsub_key  = SECRETS['pubsub']['key']
+    conf.redis       = SECRETS['pubsub']['redis'].symbolize_keys
+end
+
+Skr::Workspace::PubSub.initialize
+
+Skr::Core::DB.connect(SECRETS['db'])
+
+
+Skr::Workspace.broadcast_model_changes!
+
+c=Skr::Customer.order(:code).first
+ids = [c.billing_address_id, c.shipping_address_id]
+
+loop do
+    sample = Skr::Address.find((rand*450).to_i+1)
+    keys = sample.attributes.keys.reject{ |attr| attr=~/id/ || attr=~/_at/ }
+    key = keys.sample
+    update = {}
+    update[key] = sample[key]
+    puts "updating: #{update}"
+    Skr::Address.find(ids.sample).update_attributes!(update)
+
+    sleep 10
+end
